@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     
     // ที่อยู่ของ API หลังบ้าน (server.js)
-    const API_URL = 'http://localhost:3000/api';
+    const API_URL = 'https://stshopv1.onrender.com';
 
     // --- Elements สำหรับ Search ---
     const searchInput = document.getElementById('search-input');
@@ -155,5 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
             stopScanning();
         }
     });
+
 
 });
