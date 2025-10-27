@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เช็คราคาสินค้าสันติสุขการค้า</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <img src="logo.png" alt="โลโก้ร้านสันติสุขการค้า" class="logo" onerror="this.style.display='none'; document.querySelector('.logo-placeholder').style.display='flex';">
+            <div class="logo-placeholder">
+                 <img src="logo.jpg" alt="Logo">
+             </div>
+                <div>
+                    <h1>สันติสุขการค้า</h1>
+                    <p>ยินดีต้อนรับสู่เครื่องมือเช็คราคาสินค้า</p>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            
+            <section class="search-section">
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="ค้นหาด้วยชื่อสินค้า...">
+                    <button id="search-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        ค้นหา
+                    </button>
+                </div>
+                <div id="search-results">
+                    </div>
+            </section>
+            
+            <div class="divider">
+                <span>หรือ</span>
+            </div>
+
+            
+            <section class="scan-section">
+                <button id="scan-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><line x1="7" y1="12" x2="17" y2="12"></line></svg>
+                    สแกนบาร์โค้ด
+                </button>
+
+                <div id="video-container" class="video-wrapper">
+                    <video id="video-feed" playsinline></video>
+                    <div class="scan-overlay"></div>
+                    <p class="scan-status">กำลังค้นหาบาร์โค้ด...</p>
+                    <button id="stop-scan-btn" class="stop-scan-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        หยุดสแกน
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 สันติสุขการค้า</p>
+        </footer>
+    </div>
+
+    
+    <div id="barcode-result-popup" class="popup-overlay">
+        <div class="popup-content">
+            <h3 id="popup-product-name"></h3>
+            <p class="popup-price" id="popup-product-price"></p>
+            <button class="close-popup-btn">ปิด</button>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
+    
+    <script src="script.js"></script>
+</body>
+</html>
