@@ -1,10 +1,8 @@
-/* เพิ่มฟอนต์ Kanit (ถ้าต่อเน็ต) */
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
 
-/* ตั้งค่าพื้นฐาน */
 body {
     font-family: 'Kanit', sans-serif;
-    background-color: #f0f2f5; /* สีพื้นหลังอ่อนๆ */
+    background-color: #f0f2f5;
     color: #333;
     margin: 0;
     padding: 20px;
@@ -15,7 +13,6 @@ body {
     box-sizing: border-box;
 }
 
-/* กล่องเนื้อหาหลัก */
 .container {
     width: 100%;
     max-width: 550px;
@@ -27,9 +24,8 @@ body {
     margin-bottom: 30px;
 }
 
-/* Header */
 header {
-    background-color: #e8f5e9; /* เขียวอ่อน */
+    background-color: #e8f5e9;
     padding: 25px 30px;
     border-bottom: 1px solid #dcdcdc;
 }
@@ -41,24 +37,32 @@ header {
     gap: 20px;
 }
 
-/* โลโก้ */
-.logo-placeholder {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    overflow: hidden;
-    
-    margin-left: auto;
-    margin-right: auto;   /* ทำให้ element อยู่กึ่งกลางแนวนอน */
-}
-.logo-placeholder img {
-    width: 100%;
-    height: 100%;
+.logo {
+    width: 80px;
+    height: 80px;
     object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #66bb6a;
+    flex-shrink: 0;
+}
+
+.logo-placeholder {
+    width: 80px;
+    height: 80px;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #9e9e9e;
+    font-weight: bold;
+    font-size: 0.9em;
+    border: 3px dashed #a5d6a7;
+    flex-shrink: 0;
 }
 
 h1 {
-    color: #2e7d32; /* เขียวเข้ม */
+    color: #2e7d32;
     margin: 0 0 5px 0;
     font-size: 2em;
     font-weight: 700;
@@ -70,12 +74,10 @@ header p {
     margin: 0;
 }
 
-/* Main Content */
 main {
     padding: 30px;
 }
 
-/* Search Section */
 .search-section {
     margin-bottom: 40px;
 }
@@ -121,7 +123,6 @@ main {
     transform: translateY(-1px);
 }
 
-/* Search Results */
 #search-results {
     margin-top: 25px;
     text-align: left;
@@ -155,7 +156,6 @@ main {
     margin-left: 15px;
 }
 
-/* Divider "หรือ" */
 .divider {
     display: flex;
     align-items: center;
@@ -174,7 +174,6 @@ main {
 .divider:not(:empty)::before { margin-right: 1em; }
 .divider:not(:empty)::after { margin-left: 1em; }
 
-/* Scan Section */
 .scan-section {
     margin-top: 30px;
 }
@@ -201,9 +200,8 @@ main {
     transform: translateY(-1px);
 }
 
-/* Video Container */
 .video-wrapper {
-    display: none; /* ซ่อนไว้ก่อน */
+    display: none;
     position: relative;
     width: 100%;
     max-width: 450px;
@@ -219,7 +217,6 @@ main {
     display: block;
 }
 
-/* Scan overlay */
 .scan-overlay {
     position: absolute;
     top: 0;
@@ -228,7 +225,7 @@ main {
     height: 100%;
     pointer-events: none;
 }
-.scan-overlay::before { /* เส้นกลาง */
+.scan-overlay::before {
     content: '';
     position: absolute;
     top: 50%;
@@ -268,7 +265,6 @@ main {
 }
 .stop-scan-button:hover { background-color: rgba(255, 255, 255, 0.4); }
 
-/* Footer */
 footer {
     background-color: #f5f5f5;
     color: #9e9e9e;
@@ -277,7 +273,6 @@ footer {
     border-top: 1px solid #e0e0e0;
 }
 
-/* Pop-up */
 .popup-overlay {
     position: fixed;
     top: 0;
@@ -285,7 +280,7 @@ footer {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    display: none; /* ซ่อนไว้ก่อน */
+    display: none;
     justify-content: center;
     align-items: center;
     z-index: 1000;
@@ -326,7 +321,6 @@ footer {
 }
 .popup-content .close-popup-btn:hover { background-color: #5cb85f; }
 
-/* Responsive */
 @media (max-width: 600px) {
     body { padding: 0; }
     .container {
@@ -334,4 +328,48 @@ footer {
         box-shadow: none;
         min-height: 100vh;
     }
+}
+
+/* (สไตล์ที่เพิ่มใหม่ + แก้บั๊ก) */
+.manual-entry-section {
+    margin-top: 30px;
+}
+
+.manual-label {
+    font-size: 1em;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 15px;
+    text-align: left; /* <-- (แก้บั๊ก ชิดซ้าย) */
+}
+
+#manual-barcode-input {
+    flex-grow: 1;
+    font-size: 1em;
+    padding: 14px 18px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#manual-barcode-input:focus {
+    border-color: #66bb6a;
+    box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.2);
+    outline: none;
+}
+
+#manual-barcode-btn {
+    background-color: #4CAF50;
+    color: white;
+    font-size: 1em;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#manual-barcode-btn:hover {
+    background-color: #45a049;
 }
