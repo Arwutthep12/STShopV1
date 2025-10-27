@@ -1,20 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // ที่อยู่ของ API หลังบ้าน (server.js) - (แก้เป็น URL ของ Render แล้ว)
+    // (URL ที่ถูกต้อง ชี้ไป Render)
     const API_URL = 'https://stshopv1.onrender.com/api';
 
-    // --- Elements สำหรับ Search ---
+    // --- Elements สำหรับ Search (ชื่อ) ---
     const searchInput = document.getElementById('search-input');
     const searchBtn = document.getElementById('search-btn');
     const searchResultsDiv = document.getElementById('search-results');
 
-    // --- Elements สำหรับ Scan ---
+    // --- Elements สำหรับ Scan (กล้อง) ---
     const scanBtn = document.getElementById('scan-btn');
     const stopScanBtn = document.getElementById('stop-scan-btn');
     const videoContainer = document.getElementById('video-container');
     const video = document.getElementById('video-feed');
     let codeReader; 
     let currentStream; 
+
+    // --- (ใหม่) Elements สำหรับพิมพ์บาร์โค้ด ---
+    const manualBarcodeInput = document.getElementById('manual-barcode-input');
+    const manualBarcodeBtn = document.getElementById('manual-barcode-btn');
 
     // --- Elements สำหรับ Pop-up ---
     const barcodeResultPopup = document.getElementById('barcode-result-popup');
@@ -23,17 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const closePopupBtn = document.querySelector('.close-popup-btn');
 
     
-    // --- ฟังก์ชัน Search (ใช้ API) ---
+    // --- ฟังก์ชัน Search (ด้วยชื่อ) ---
     async function performSearch() {
         const searchTerm = searchInput.value.trim();
         searchResultsDiv.innerHTML = ''; 
-
         if (searchTerm.length === 0) return;
-
         try {
             const response = await fetch(`${API_URL}/search?name=${encodeURIComponent(searchTerm)}`);
             const results = await response.json();
-
             if (results.length > 0) {
                 results.forEach(product => {
                     const itemDiv = document.createElement('div');
@@ -47,31 +48,66 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 searchResultsDiv.innerHTML = '<p style="text-align:center; color: #888;">ไม่พบสินค้าที่ตรงกัน</p>';
             }
-
         } catch (error) {
             console.error('Error fetching search results:', error);
             searchResultsDiv.innerHTML = '<p style="text-align:center; color: red;">เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์</p>';
         }
     }
-
-    // --- Event Listeners สำหรับ Search ---
     searchBtn.addEventListener('click', performSearch);
     searchInput.addEventListener('keyup', (event) => {
         if (event.key === 'Enter') performSearch();
     });
 
+
+    // --- (ใหม่) ฟังก์ชันกลางสำหรับ "จัดการผลลัพธ์บาร์โค้ด" ---
+    function handleBarcodeResult(barcodeText) {
+        if (codeReader) codeReader.reset(); 
+        if (currentStream) currentStream.getTracks().forEach(track => track.stop());
+        videoContainer.style.display = 'none';
+        scanBtn.style.display = 'flex';
+        
+        fetch(`${API_URL}/barcode/${barcodeText}`)
+            .then(response => {
+                if (!response.ok) throw new Error('Product not found');
+                return response.json();
+            })
+            .then(product => {
+                showScanResultPopup(product.name, product.price);
+            })
+            .catch(error => {
+                console.error('Error fetching barcode:', error);
+                showScanResultPopup(undefined, undefined); 
+            });
+    }
+
+    // --- (ใหม่) Event Listener สำหรับปุ่ม "พิมพ์บาร์โค้ด" ---
+    manualBarcodeBtn.addEventListener('click', () => {
+        const barcodeText = manualBarcodeInput.value.trim();
+        if (barcodeText.length > 0) {
+            handleBarcodeResult(barcodeText);
+        }
+    });
+    manualBarcodeInput.addEventListener('keyup', (event) => {
+        if (event.key === 'Enter') {
+            const barcodeText = manualBarcodeInput.value.trim();
+            if (barcodeText.length > 0) {
+                handleBarcodeResult(barcodeText);
+            }
+        }
+    });
+
+
     // --- ฟังก์ชันสำหรับแสดง Pop-up ---
     function showScanResultPopup(productName, price) {
         popupProductName.textContent = productName || 'ไม่พบข้อมูล'; 
         popupProductPrice.textContent = price ? `${price} บาท` : 'ไม่มีในฐานข้อมูล';
-        
         barcodeResultPopup.style.display = 'flex';
     }
 
     // --- Event Listener สำหรับปิด Pop-up ---
     closePopupBtn.addEventListener('click', () => {
         barcodeResultPopup.style.display = 'none'; 
-        stopScanning(); // กลับไปหน้าค้นหา/สแกน
+        stopScanning(); // เรียกใช้ฟังก์ชันหยุดสแกน (เพื่อคืนค่าหน้าจอ)
     });
 
     // --- ฟังก์ชันหยุดการสแกน ---
@@ -83,9 +119,11 @@ document.addEventListener('DOMContentLoaded', () => {
         scanBtn.style.display = 'flex'; 
         document.querySelector('.search-container').style.display = 'flex'; 
         document.querySelector('.divider').style.display = 'flex'; 
+        document.querySelector('.manual-entry-section').style.display = 'block';
         searchResultsDiv.style.display = 'block'; 
         searchResultsDiv.innerHTML = ''; 
         searchInput.value = ''; 
+        manualBarcodeInput.value = '';
     }
 
     // --- Event Listener สำหรับปุ่มหยุดสแกน ---
@@ -95,7 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Event Listener สำหรับปุ่มสแกน ---
     scanBtn.addEventListener('click', () => {
         if (navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
-            
             navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false })
                 .then((stream) => {
                     currentStream = stream;
@@ -106,45 +143,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     // ซ่อนส่วนอื่นๆ
                     scanBtn.style.display = 'none';
                     document.querySelector('.search-container').style.display = 'none';
-                    document.querySelector('.divider').style.display = 'none';
                     searchResultsDiv.style.display = 'none';
-
+                    document.querySelector('.manual-entry-section').style.display = 'none';
+                    
                     codeReader = new ZXing.BrowserMultiFormatReader();
                     
-                    // --- ฟังก์ชัน Scan (ใช้ API) ---
                     codeReader.decodeFromVideoElement(video, 'video-feed', (result, err) => {
                         if (result) {
                             
-                            // 
-                            // ↓↓↓ --- นี่คือโค้ดที่เพิ่มเข้ามา --- ↓↓↓
-                            // 
-                            // มันจะเด้งเตือนเลขบาร์โค้ดที่กล้องอ่านได้
-                            alert('สแกนเจอ: ' + result.text);
-                            // 
-                            // ↑↑↑ ------------------------------ ↑↑↑
-                            // 
+                            // (Alert Debug)
+                            alert('สแกนเจอ: ' + result.text); 
 
                             console.log('Scan Result:', result.text);
-                            // หยุดสแกน
-                            codeReader.reset(); 
-                            currentStream.getTracks().forEach(track => track.stop());
-                            videoContainer.style.display = 'none';
                             
-                            // 1. ยิง API ไปถามหลังบ้าน
-                            fetch(`${API_URL}/barcode/${result.text}`)
-                                .then(response => {
-                                    if (!response.ok) throw new Error('Product not found');
-                                    return response.json();
-                                })
-                                .then(product => {
-                                    // 2. ถ้าเจอ
-                                    showScanResultPopup(product.name, product.price);
-                                })
-                                .catch(error => {
-                                    // 3. ถ้าไม่เจอ
-                                    console.error('Error fetching barcode:', error);
-                                    showScanResultPopup(undefined, undefined); 
-                                });
+                            handleBarcodeResult(result.text);
                         }
                         if (err && !(err instanceof ZXing.NotFoundException)) {
                             console.error(err);
