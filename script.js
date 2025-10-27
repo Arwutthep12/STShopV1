@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // ที่อยู่ของ API หลังบ้าน (server.js)
+    // ที่อยู่ของ API หลังบ้าน (server.js) - (แก้เป็น URL ของ Render แล้ว)
     const API_URL = 'https://stshopv1.onrender.com/api';
 
     // --- Elements สำหรับ Search ---
@@ -31,11 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (searchTerm.length === 0) return;
 
         try {
-            // 1. ยิงคำขอ (Fetch) ไปที่ API หลังบ้าน
             const response = await fetch(`${API_URL}/search?name=${encodeURIComponent(searchTerm)}`);
             const results = await response.json();
 
-            // 2. แสดงผลลัพธ์
             if (results.length > 0) {
                 results.forEach(product => {
                     const itemDiv = document.createElement('div');
@@ -116,6 +114,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     // --- ฟังก์ชัน Scan (ใช้ API) ---
                     codeReader.decodeFromVideoElement(video, 'video-feed', (result, err) => {
                         if (result) {
+                            
+                            // 
+                            // ↓↓↓ --- นี่คือโค้ดที่เพิ่มเข้ามา --- ↓↓↓
+                            // 
+                            // มันจะเด้งเตือนเลขบาร์โค้ดที่กล้องอ่านได้
+                            alert('สแกนเจอ: ' + result.text);
+                            // 
+                            // ↑↑↑ ------------------------------ ↑↑↑
+                            // 
+
                             console.log('Scan Result:', result.text);
                             // หยุดสแกน
                             codeReader.reset(); 
@@ -156,6 +164,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
 });
-
