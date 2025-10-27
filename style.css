@@ -15,7 +15,7 @@ body {
 
 .container {
     width: 100%;
-    max-width: 550px;
+    max-width: 600px;
     background-color: #ffffff;
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
@@ -373,3 +373,4 @@ footer {
 #manual-barcode-btn:hover {
     background-color: #45a049;
 }
+
