@@ -5,7 +5,7 @@ body {
     background-color: #f0f2f5;
     color: #333;
     margin: 0;
-    padding: 30px;
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -15,7 +15,7 @@ body {
 
 .container {
     width: 100%;
-    max-width: 600px;
+    max-width: 550px;
     background-color: #ffffff;
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
@@ -373,5 +373,3 @@ footer {
 #manual-barcode-btn:hover {
     background-color: #45a049;
 }
-
-
