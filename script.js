@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     codeReader.decodeFromVideoElement(video, 'video-feed', (result, err) => {
                         if (result) {
                             
-                            // (Alert Debug)
+                            // (Alert Debug ที่เราเพิ่มไว้)
                             alert('สแกนเจอ: ' + result.text); 
 
                             console.log('Scan Result:', result.text);
